@@ -46,7 +46,9 @@ const addTodo = () => {
 }
 
 const removeTodo = (id) => {
+  // console.log('Removing todo with id:', id)
   todos.value = todos.value.filter((todo) => todo.id !== id)
+  // console.log('Remaining todos:', todos.value)
 }
 
 onMounted(() => {
@@ -126,7 +128,7 @@ onMounted(() => {
           </div>
 
           <div class="actions">
-            <button class="delete" @click="removeTodo(todo)">Delete</button>
+            <button class="delete" @click="removeTodo(todo.id)">Delete</button>
           </div>
         </div>
       </div>
