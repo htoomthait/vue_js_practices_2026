@@ -13,19 +13,19 @@ const todos_asc = computed(() =>
   }),
 )
 
-watch(todos, (newTodos) => {
-  localStorage.setItem('todos', JSON.stringify(newTodos))
-})
-
 watch(
-  name,
-  (newName) => {
-    localStorage.setItem('name', newName)
+  todos,
+  (newTodos) => {
+    localStorage.setItem('todos', JSON.stringify(newTodos))
   },
   {
     deep: true,
   },
 )
+
+watch(name, (newName) => {
+  localStorage.setItem('name', newName)
+})
 
 const addTodo = () => {
   if (input_content.value.trim() === '' || input_category.value === null) {
