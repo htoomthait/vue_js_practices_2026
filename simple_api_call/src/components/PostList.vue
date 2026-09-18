@@ -72,7 +72,9 @@ const sortedPosts = computed(() => {
   <table class="post_table">
     <thead>
       <tr>
-        <th>User Id</th>
+        <th @click="sortBy('userId')" class="sortable-header">
+          User Id <span class="sort-icon">{{ getSortIcon('id') }}</span>
+        </th>
         <th @click="sortBy('id')" class="sortable-header">
           Id <span class="sort-icon">{{ getSortIcon('id') }}</span>
         </th>
