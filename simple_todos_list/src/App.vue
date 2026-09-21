@@ -9,7 +9,7 @@ const input_category = ref('')
 
 const todos_asc = computed(() =>
   todos.value.sort((a, b) => {
-    return a.created_at - b.created_at
+    return b.created_at - a.created_at
   }),
 )
 
