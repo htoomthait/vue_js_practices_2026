@@ -13,6 +13,10 @@
                 <p class="mb-7">
                     {{product.description}}
                 </p>
+                <button class="btn flex ">
+                    <i class="material-icons mr-2">add_shopping_cart</i>
+                    <span>Add to cart</span>
+                </button>
             </div>
         </div>
 
