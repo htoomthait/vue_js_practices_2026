@@ -13,6 +13,6 @@ export  default defineEventHandler(async (event) => {
 
     return {
         // message: `Hello, ${name}! You are age ${age} years old.`
-        message: data
+       data
     }
 })
