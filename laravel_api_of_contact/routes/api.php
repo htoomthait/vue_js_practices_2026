@@ -12,3 +12,6 @@ Route::get('/user', function (Request $request) {
 Route::get('/landing', [HomeController::class, 'landingApiCall']);
 
 Route::get('/contacts', [ContactController::class,'getContacts']);
+
+
+Route::post('/contacts', [ContactController::class,'registerContact']);
