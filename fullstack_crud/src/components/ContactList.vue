@@ -11,12 +11,16 @@
         </tr>
       </thead>
       <tbody>
-        <tr class="table-secondary">
-          <td>1</td>
-          <td>1</td>
-          <td>1</td>
-          <td>1</td>
-          <td>1</td>
+        <tr
+          :class="contact.id % 2 === 0 ? 'table-secondary' : 'table-primary'"
+          v-for="contact in contacts"
+          :key="contact.id"
+        >
+          <td>{{ contact.id }}</td>
+          <td>{{ contact.name }}</td>
+          <td>{{ contact.email }}</td>
+          <td>{{ contact.designation }}</td>
+          <td>{{ contact.contact_no }}</td>
         </tr>
       </tbody>
     </table>
@@ -24,16 +28,19 @@
 </template>
 
 <script setup>
+import { ref, onMounted } from 'vue'
 import axios from 'axios'
-import { onMounted } from 'vue'
+
+const contacts = ref([])
 
 const getContacts = async () => {
   try {
-    const response = await axios.get('https://localhost:8000/api/contacts')
+    const response = await axios.get('http://localhost:8000/api/contacts')
 
-    return response.data
+    contacts.value = response.data.contacts
   } catch (error) {
     console.error('Error fetching contacts:', error)
+    throw new Error('Contact list cannot be fetched: ' + error.message, { cause: error })
   }
 }
 
