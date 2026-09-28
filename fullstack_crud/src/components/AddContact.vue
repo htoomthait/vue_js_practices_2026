@@ -3,7 +3,7 @@
     <ToastMessage ref="toast" title="Contact Adding" :body="toastBody" />
     <div class="row d-flex justify-content-center">
       <div class="col-md-6 card p-4">
-        <form action="#" @submit.prevent="handleAddContact">
+        <form action="#" @submit.prevent="handleAddContact" novalidate>
           <fieldset>
             <div class="form-group">
               <label for="txtName" class="form-label mt-4"> Name:</label>
@@ -15,8 +15,11 @@
                 placeholder="Enter Name"
                 v-model="contact.name"
                 required="true"
+                @blur="validateForm"
+                @keypress="validateForm"
               />
             </div>
+            <small class="text-danger">{{ contactError.name_err }}</small>
 
             <div class="form-group">
               <label for="txtEmail" class="form-label mt-4"> Email:</label>
@@ -28,7 +31,10 @@
                 placeholder="Enter Email"
                 required="true"
                 v-model="contact.email"
+                @blur="validateForm"
+                @keypress="validateForm"
               />
+              <small class="text-danger">{{ contactError.email_err }}</small>
             </div>
 
             <div class="form-group">
@@ -41,7 +47,10 @@
                 placeholder="Enter Contact No"
                 required="true"
                 v-model="contact.contact_no"
+                @blur="validateForm"
+                @keypress="validateForm"
               />
+              <small class="text-danger">{{ contactError.contact_no_err }}</small>
             </div>
 
             <div class="form-group">
@@ -54,7 +63,10 @@
                 placeholder="Enter Designation"
                 required="true"
                 v-model="contact.designation"
+                @blur="validateForm"
+                @keypress="validateForm"
               />
+              <small class="text-danger">{{ contactError.designation_err }}</small>
             </div>
             <div class="form-group mt-4 d-flex justify-content-end">
               <RouterLink to="/" class="btn btn-outline-primary border-radius-10 mr-2">
@@ -81,18 +93,82 @@ const initContact = {
   designation: '',
 }
 
+const initContactError = {
+  name_err: '',
+  email_err: '',
+  contact_err: '',
+  designation_err: '',
+}
+
 const contact = ref({ ...initContact })
+const contactError = ref({ ...initContactError })
 const toast = ref(null)
 const toastBody = ref('The contact was added successfully.')
+const isInitForm = ref(true)
+
+const validateForm = () => {
+  let isFormValid = true
+
+  if (!isInitForm.value) {
+    if (contact.value.name.trim() == '') {
+      contactError.value.name_err = 'Name input box is required to fill.'
+      isFormValid = false
+    } else if (contact.value.name.trim().length < 3) {
+      contactError.value.name_err = 'Please enter at least 3 characters.'
+      isFormValid = false
+    } else {
+      contactError.value.name_err = ''
+      isFormValid = true
+    }
+
+    if (contact.value.email.trim() == '') {
+      contactError.value.email_err = 'Email input box is required to fill.'
+      isFormValid = false
+    } else if (!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(contact.value.email)) {
+      contactError.value.email_err = 'Please enter a valid email address format.'
+      isFormValid = false
+    } else {
+      contactError.value.email_err = ''
+      isFormValid = true
+    }
+
+    if (contact.value.contact_no.trim() == '') {
+      contactError.value.contact_no_err = 'Contact input box is required to fill.'
+      isFormValid = false
+    } else {
+      contactError.value.contact_no_err = ''
+      isFormValid = true
+    }
+
+    if (contact.value.designation.trim() == '') {
+      contactError.value.designation_err = 'Designation_err input box is required to fill.'
+      isFormValid = false
+    } else if (contact.value.designation.trim().length < 2) {
+      contactError.value.designation_err = 'Designation should have at least 2 characters.'
+      isFormValid = false
+    } else {
+      contactError.value.designation_err = ''
+      isFormValid = true
+    }
+  }
+
+  return isFormValid
+}
 
 const handleAddContact = async () => {
   const dataToPost = { ...contact.value }
+  isInitForm.value = false
+
+  if (!validateForm()) {
+    return
+  }
 
   await axios.post('http://localhost:8000/api/contacts', dataToPost)
   toastBody.value = `${dataToPost.name} was added successfully.`
   toast.value?.showToast()
 
   contact.value = { ...initContact }
+  isInitForm.value = true
 }
 </script>
 
