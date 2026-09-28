@@ -8,6 +8,7 @@
           <th scope="col" class="bg-primary text-white">Email</th>
           <th scope="col" class="bg-primary text-white">Designation</th>
           <th scope="col" class="bg-primary text-white">Contact No</th>
+          <th scope="col" class="bg-primary text-white">Actions</th>
         </tr>
       </thead>
       <tbody>
@@ -21,6 +22,14 @@
           <td>{{ contact.email }}</td>
           <td>{{ contact.designation }}</td>
           <td>{{ contact.contact_no }}</td>
+          <td>
+            <RouterLink :to="`/edit-contact/${contact.id}`" class="btn btn-outline-warning mr-2">
+              Edit</RouterLink
+            >
+            <button class="btn btn-outline-danger" @click="handleDeleteContactById(contact.id)">
+              Delete
+            </button>
+          </td>
         </tr>
       </tbody>
     </table>
@@ -41,6 +50,17 @@ const getContacts = async () => {
   } catch (error) {
     console.error('Error fetching contacts:', error)
     throw new Error('Contact list cannot be fetched: ' + error.message, { cause: error })
+  }
+}
+
+const handleDeleteContactById = async (id) => {
+  try {
+    const response = await axios.delete(`http://localhost:8000/api/contacts/${id}`)
+    getContacts()
+
+    console.log(response)
+  } catch (error) {
+    console.log(error)
   }
 }
 
