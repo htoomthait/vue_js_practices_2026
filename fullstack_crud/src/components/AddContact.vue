@@ -192,7 +192,7 @@ const handleAddContact = async () => {
   }
 
   toast.value?.showToast()
-  isInitForm.value = true
+  // isInitForm.value = true
 }
 </script>
 

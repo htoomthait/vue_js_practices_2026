@@ -15,3 +15,9 @@ Route::get('/contacts', [ContactController::class,'getContacts']);
 
 
 Route::post('/contacts', [ContactController::class,'registerContact']);
+
+Route::get('/contacts/{id}', [ContactController::class,'getContactById']);
+
+Route::put('/contacts/{id}', [ContactController::class,'updateContactById']);
+
+Route::delete('/contacts/{id}', [ContactController::class,'deleteContactById']);
