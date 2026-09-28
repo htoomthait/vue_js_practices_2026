@@ -10,11 +10,33 @@ class ContactController extends Controller
     /**
      * Get the contats as list from database response as json
      * @author Htoo Maung Thait (htoomaungthait@gmail.com)
+     * @co-author github copilot
      * @since 2026-09-24
      * @return \Illuminate\Http\JsonResponse
      */
-    public function getContacts(){
-        $contacts = Contact::query()->orderByDesc("id")->get();
+    public function getContacts(Request $request){
+        $validated = $request->validate([
+            "page" => "sometimes|integer|min:1",
+            "limit" => "sometimes|integer|min:1|max:100",
+            "per_page" => "sometimes|integer|min:1|max:100",
+            "search" => "sometimes|string|max:255",
+        ]);
+
+        $page = $validated["page"] ?? 1;
+        $limit = $validated["limit"] ?? $validated["per_page"] ?? 10;
+        $query = Contact::query();
+
+        if (!empty($validated["search"])) {
+            $search = $validated["search"];
+            $query->where(function ($query) use ($search) {
+                $query->where("name", "like", "%{$search}%")
+                    ->orWhere("email", "like", "%{$search}%")
+                    ->orWhere("contact_no", "like", "%{$search}%")
+                    ->orWhere("designation", "like", "%{$search}%");
+            });
+        }
+
+        $contacts = $query->paginate($limit, ["*"], "page", $page);
 
         return response()->json([
             "code" => 200,
