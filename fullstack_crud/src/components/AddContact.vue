@@ -163,11 +163,35 @@ const handleAddContact = async () => {
     return
   }
 
-  await axios.post('http://localhost:8000/api/contacts', dataToPost)
-  toastBody.value = `${dataToPost.name} was added successfully.`
-  toast.value?.showToast()
+  try {
+    const response = await axios.post('http://localhost:8000/api/contacts', dataToPost, {
+      headers: {
+        'Content-Type': 'application/json',
+      },
+    })
 
-  contact.value = { ...initContact }
+    if (response.status === 201) {
+      toastBody.value = response.data.message
+      toast.value?.showToast()
+
+      contact.value = { ...initContact }
+      isInitForm.value = true
+    }
+  } catch (error) {
+    if (error.response) {
+      // Server responded with an error status
+      if (error.response.status === 500) {
+        toastBody.value = error.response.data.message || 'Server error cannot proceed this time.'
+      } else {
+        toastBody.value = error.response.data.message || 'Something went wrong.'
+      }
+    } else {
+      // No response from server
+      toastBody.value = 'Cannot connect to the server.'
+    }
+  }
+
+  toast.value?.showToast()
   isInitForm.value = true
 }
 </script>

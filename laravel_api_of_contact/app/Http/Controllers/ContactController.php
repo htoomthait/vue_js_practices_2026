@@ -19,7 +19,7 @@ class ContactController extends Controller
             "code" => 200,
             "message" => "Contacts are listed as follow",
             "contacts"=> $contacts
-        ]);
+        ],200);
     }
 
     /**
@@ -46,8 +46,8 @@ class ContactController extends Controller
 
         return response()->json([
             "code"=> 201,
-            "message"=> "New contact has been created successfully!",
+            "message"=> "New contact {$newContact->name} has been created successfully!",
             "contact" => $newContact
-        ]);
+        ], 201);
     }
 }
