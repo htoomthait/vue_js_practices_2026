@@ -1,7 +1,8 @@
 <template>
-  <div class="container">
-    <div class="row d-flex justify-content-center border border-success">
-      <div class="col-md-6 border border-danger">
+  <div class="container add-contact-container">
+    <ToastMessage ref="toast" title="Contact Adding" :body="toastBody" />
+    <div class="row d-flex justify-content-center">
+      <div class="col-md-6 card p-4">
         <form action="#" @submit.prevent="handleAddContact">
           <fieldset>
             <div class="form-group">
@@ -56,7 +57,10 @@
               />
             </div>
             <div class="form-group mt-4 d-flex justify-content-end">
-              <button class="btn btn-primary" type="submit">Add Contact</button>
+              <RouterLink to="/" class="btn btn-outline-primary border-radius-10 mr-2">
+                Back to Contact List
+              </RouterLink>
+              <button class="btn btn-primary border-radius-10" type="submit">Add Contact</button>
             </div>
           </fieldset>
         </form>
@@ -67,6 +71,8 @@
 
 <script setup>
 import { ref } from 'vue'
+import axios from 'axios'
+import ToastMessage from './ToastMessage.vue'
 
 const initContact = {
   name: '',
@@ -75,12 +81,23 @@ const initContact = {
   designation: '',
 }
 
-const contact = ref(initContact)
+const contact = ref({ ...initContact })
+const toast = ref(null)
+const toastBody = ref('The contact was added successfully.')
 
 const handleAddContact = async () => {
-  console.log('You clicked handle Add Contact')
-  console.log('Fill contact', contact.value)
+  const dataToPost = { ...contact.value }
+
+  await axios.post('http://localhost:8000/api/contacts', dataToPost)
+  toastBody.value = `${dataToPost.name} was added successfully.`
+  toast.value?.showToast()
+
+  contact.value = { ...initContact }
 }
 </script>
 
-<style scoped></style>
+<style scoped>
+.add-contact-container {
+  position: relative;
+}
+</style>

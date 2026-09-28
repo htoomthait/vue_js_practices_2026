@@ -13,7 +13,7 @@ class ContactController extends Controller
      * @return \Illuminate\Http\JsonResponse
      */
     public function getContacts(){
-        $contacts = Contact::query()->get();
+        $contacts = Contact::query()->orderByDesc("id")->get();
 
         return response()->json([
             "code" => 200,

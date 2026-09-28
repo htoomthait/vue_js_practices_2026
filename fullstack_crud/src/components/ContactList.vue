@@ -1,13 +1,13 @@
 <template>
-  <div class="container">
-    <table class="table table-hover">
+  <div class="container card">
+    <table class="table table-hover mt-4">
       <thead>
         <tr>
-          <th scope="col">#</th>
-          <th scope="col">Name</th>
-          <th scope="col">Email</th>
-          <th scope="col">Designation</th>
-          <th scope="col">Contact No</th>
+          <th scope="col" class="bg-primary text-white">#</th>
+          <th scope="col" class="bg-primary text-white">Name</th>
+          <th scope="col" class="bg-primary text-white">Email</th>
+          <th scope="col" class="bg-primary text-white">Designation</th>
+          <th scope="col" class="bg-primary text-white">Contact No</th>
         </tr>
       </thead>
       <tbody>
