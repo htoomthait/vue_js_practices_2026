@@ -19,8 +19,9 @@ class ContactController extends Controller
             "page" => "sometimes|integer|min:1",
             "limit" => "sometimes|integer|min:1|max:100",
             "per_page" => "sometimes|integer|min:1|max:100",
-            "search" => "sometimes|string|max:255",
+            "search" => "sometimes|max:255",
         ]);
+
 
         $page = $validated["page"] ?? 1;
         $limit = $validated["limit"] ?? $validated["per_page"] ?? 10;

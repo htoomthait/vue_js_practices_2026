@@ -1,6 +1,19 @@
 <template>
   <div class="container card">
     <ToastMessage ref="toast" title="Contact Delete" :body="toastBody" />
+    <div class="px-3 pt-3">
+      <label for="contact-search" class="form-label">Search contacts</label>
+      <input
+        id="contact-search"
+        v-model="searchTerm"
+        type="search"
+        class="form-control"
+        placeholder="Search by name, email, or contact number"
+        @input="searchContacts"
+        @keydown="searchContacts"
+        @blur="searchContacts"
+      />
+    </div>
     <table class="table table-hover mt-4">
       <thead>
         <tr>
@@ -145,7 +158,7 @@
 </template>
 
 <script setup>
-import { computed, ref, onMounted } from 'vue'
+import { computed, ref, onMounted, onUnmounted } from 'vue'
 import axios from 'axios'
 import ToastMessage from './ToastMessage.vue'
 
@@ -161,6 +174,8 @@ const currentPage = ref(1)
 const lastPage = ref(1)
 const totalItems = ref(0)
 const isLoading = ref(false)
+const searchTerm = ref('')
+let searchTimeout
 const fromItem = computed(() =>
   totalItems.value ? (currentPage.value - 1) * perPage.value + 1 : 0,
 )
@@ -193,7 +208,7 @@ const getContacts = async (page = currentPage.value) => {
   isLoading.value = true
   try {
     const response = await axios.get('http://localhost:8000/api/contacts', {
-      params: { page, per_page: perPage.value },
+      params: { page, per_page: perPage.value, search: searchTerm.value.trim() },
     })
     const paginator = response.data.contacts
 
@@ -217,6 +232,11 @@ const loadPage = (page) => {
 
 const changePerPage = () => {
   getContacts(1)
+}
+
+const searchContacts = () => {
+  clearTimeout(searchTimeout)
+  searchTimeout = setTimeout(() => getContacts(1), 300)
 }
 
 const openDeleteConfirmation = (contact) => {
@@ -254,6 +274,8 @@ const confirmDelete = async () => {
 onMounted(() => {
   getContacts()
 })
+
+onUnmounted(() => clearTimeout(searchTimeout))
 </script>
 
 <style scoped></style>
