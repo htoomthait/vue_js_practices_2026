@@ -1,0 +1,19 @@
+.border-radius-10 {
+  border-radius: 10px;
+}
+
+.bg-primary {
+  background-color: #583196;
+}
+
+.text-white {
+  color: #fff;
+}
+
+.mt-4 {
+  margin-top: 8px;
+}
+
+.mr-2 {
+  margin-right: 4px;
+}
