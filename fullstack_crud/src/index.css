@@ -10,6 +10,9 @@
   color: #fff;
 }
 
+.mt-2 {
+  margin-top: 4px;
+}
 .mt-4 {
   margin-top: 8px;
 }
@@ -20,4 +23,8 @@
 
 .line-height-50 {
   line-height: 50px;
+}
+
+.height-50 {
+  height: 50px;
 }

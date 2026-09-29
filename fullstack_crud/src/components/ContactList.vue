@@ -16,17 +16,38 @@
     </div>
     <table class="table table-hover mt-4">
       <thead>
-        <tr>
-          <th scope="col" class="bg-primary text-white text-center">#</th>
-          <th scope="col" class="bg-primary text-white text-center">Name</th>
-          <th scope="col" class="bg-primary text-white text-center">Email</th>
-          <th scope="col" class="bg-primary text-white text-center">Designation</th>
-          <th scope="col" class="bg-primary text-white text-center">Contact No</th>
-          <th
-            scope="col"
-            class="bg-primary text-white d-flex flex-column justify-content-center align-items-center"
-          >
-            <span class="d-inline-flex align-items-center gap-1">
+        <tr class="">
+          <th scope="col" class="bg-primary text-white">
+            <span class="d-flex justify-content-center align-items-center gap-1 height-50">
+              <span class="material-icons">numbers</span>
+            </span>
+          </th>
+          <th scope="col" class="bg-primary text-white">
+            <span class="d-flex justify-content-center align-items-center gap-1 height-50">
+              <span class="material-icons">person</span>
+              Name
+            </span>
+          </th>
+          <th scope="col" class="bg-primary text-white">
+            <span class="d-flex justify-content-center align-items-center gap-1 height-50">
+              <span class="material-icons">alternate_email</span>
+              Email
+            </span>
+          </th>
+          <th scope="col" class="bg-primary text-white">
+            <span class="d-flex justify-content-center align-items-center gap-1 height-50">
+              <span class="material-icons">work</span>
+              Designation
+            </span>
+          </th>
+          <th scope="col" class="bg-primary text-white">
+            <span class="d-flex justify-content-center align-items-center gap-1 height-50">
+              <span class="material-icons">phone</span>
+              Contact No
+            </span>
+          </th>
+          <th scope="col" class="bg-primary text-white">
+            <span class="d-flex justify-content-center align-items-center gap-1 height-50">
               <span class="material-icons">settings</span>
               Actions
             </span>
