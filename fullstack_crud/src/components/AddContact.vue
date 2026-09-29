@@ -83,7 +83,7 @@
 
 <script setup>
 import { ref } from 'vue'
-import axios from 'axios'
+import api from '../services/api'
 import ToastMessage from './ToastMessage.vue'
 
 const initContact = {
@@ -164,7 +164,7 @@ const handleAddContact = async () => {
   }
 
   try {
-    const response = await axios.post('http://localhost:8000/api/contacts', dataToPost, {
+    const response = await api.post('/contacts', dataToPost, {
       headers: {
         'Content-Type': 'application/json',
       },

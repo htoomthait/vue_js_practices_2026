@@ -17,12 +17,20 @@
     <table class="table table-hover mt-4">
       <thead>
         <tr>
-          <th scope="col" class="bg-primary text-white">#</th>
-          <th scope="col" class="bg-primary text-white">Name</th>
-          <th scope="col" class="bg-primary text-white">Email</th>
-          <th scope="col" class="bg-primary text-white">Designation</th>
-          <th scope="col" class="bg-primary text-white">Contact No</th>
-          <th scope="col" class="bg-primary text-white">Actions</th>
+          <th scope="col" class="bg-primary text-white text-center">#</th>
+          <th scope="col" class="bg-primary text-white text-center">Name</th>
+          <th scope="col" class="bg-primary text-white text-center">Email</th>
+          <th scope="col" class="bg-primary text-white text-center">Designation</th>
+          <th scope="col" class="bg-primary text-white text-center">Contact No</th>
+          <th
+            scope="col"
+            class="bg-primary text-white d-flex flex-column justify-content-center align-items-center"
+          >
+            <span class="d-inline-flex align-items-center gap-1">
+              <span class="material-icons">settings</span>
+              Actions
+            </span>
+          </th>
         </tr>
       </thead>
       <tbody>
@@ -36,11 +44,20 @@
           <td>{{ contact.email }}</td>
           <td>{{ contact.designation }}</td>
           <td>{{ contact.contact_no }}</td>
-          <td>
-            <RouterLink :to="`/edit-contact/${contact.id}`" class="btn btn-outline-warning mr-2">
-              Edit</RouterLink
+          <td class="d-flex justify-content-center">
+            <RouterLink
+              :to="`/edit-contact/${contact.id}`"
+              class="btn btn-outline-warning mr-2 d-inline-flex align-items-center gap-1"
             >
-            <button class="btn btn-outline-danger" @click="openDeleteConfirmation(contact)">
+              <span class="material-icons"> edit_calendar </span>
+              Edit
+            </RouterLink>
+
+            <button
+              class="btn btn-outline-danger d-inline-flex align-items-center gap-1"
+              @click="openDeleteConfirmation(contact)"
+            >
+              <span class="material-icons">delete</span>
               Delete
             </button>
           </td>
@@ -105,62 +122,23 @@
     </div>
   </div>
 
-  <template v-if="contactToDelete">
-    <div
-      class="modal fade show"
-      tabindex="-1"
-      role="dialog"
-      aria-modal="true"
-      aria-labelledby="delete-contact-title"
-      style="display: block"
-    >
-      <div class="modal-dialog modal-dialog-centered" role="document">
-        <div class="modal-content">
-          <div class="modal-header">
-            <h5 id="delete-contact-title" class="modal-title">Delete contact?</h5>
-            <button
-              type="button"
-              class="btn-close"
-              aria-label="Close"
-              :disabled="isDeleting"
-              @click="cancelDelete"
-            ></button>
-          </div>
-          <div class="modal-body">
-            <p class="mb-0">Are you sure you want to delete {{ contactToDelete.name }}?</p>
-            <p v-if="deleteError" class="text-danger mt-3 mb-0" role="alert">
-              {{ deleteError }}
-            </p>
-          </div>
-          <div class="modal-footer">
-            <button
-              type="button"
-              class="btn btn-secondary"
-              :disabled="isDeleting"
-              @click="cancelDelete"
-            >
-              Cancel
-            </button>
-            <button
-              type="button"
-              class="btn btn-danger"
-              :disabled="isDeleting"
-              @click="confirmDelete"
-            >
-              {{ isDeleting ? 'Deleting...' : 'Delete' }}
-            </button>
-          </div>
-        </div>
-      </div>
-    </div>
-    <div class="modal-backdrop fade show"></div>
-  </template>
+  <ConfirmBox
+    v-if="contactToDelete"
+    :object-to-act="contactToDelete"
+    :is-action-doing="isDeleting"
+    :action-error="deleteError"
+    box-title="Delete Contact?"
+    action-name="Delete"
+    :handle-cancel-action="cancelDelete"
+    :handle-confirm-action="confirmDelete"
+  />
 </template>
 
 <script setup>
 import { computed, ref, onMounted, onUnmounted } from 'vue'
-import axios from 'axios'
+import api from '../services/api'
 import ToastMessage from './ToastMessage.vue'
+import ConfirmBox from './ConfirmBox.vue'
 
 const contacts = ref([])
 const contactToDelete = ref(null)
@@ -207,7 +185,7 @@ const paginationItems = computed(() => {
 const getContacts = async (page = currentPage.value) => {
   isLoading.value = true
   try {
-    const response = await axios.get('http://localhost:8000/api/contacts', {
+    const response = await api.get('/contacts', {
       params: { page, per_page: perPage.value, search: searchTerm.value.trim() },
     })
     const paginator = response.data.contacts
@@ -239,6 +217,7 @@ const searchContacts = () => {
   searchTimeout = setTimeout(() => getContacts(1), 300)
 }
 
+/** Delete Contact with confirmation group start */
 const openDeleteConfirmation = (contact) => {
   contactToDelete.value = contact
   deleteError.value = ''
@@ -256,9 +235,7 @@ const confirmDelete = async () => {
 
   isDeleting.value = true
   try {
-    const response = await axios.delete(
-      `http://localhost:8000/api/contacts/${contactToDelete.value.id}`,
-    )
+    const response = await api.delete(`/contacts/${contactToDelete.value.id}`)
     contactToDelete.value = null
     await getContacts(currentPage.value)
 
@@ -270,6 +247,8 @@ const confirmDelete = async () => {
     isDeleting.value = false
   }
 }
+
+/** Delete Contact with confirmation group end */
 
 onMounted(() => {
   getContacts()

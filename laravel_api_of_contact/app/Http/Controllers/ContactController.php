@@ -37,7 +37,7 @@ class ContactController extends Controller
             });
         }
 
-        $contacts = $query->paginate($limit, ["*"], "page", $page);
+        $contacts = $query->orderByDesc("id")->paginate($limit, ["*"], "page", $page);
 
         return response()->json([
             "code" => 200,

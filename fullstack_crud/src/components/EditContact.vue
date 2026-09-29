@@ -85,7 +85,7 @@
 <script setup>
 import { ref, onMounted } from 'vue'
 import { useRoute } from 'vue-router'
-import axios from 'axios'
+import api from '../services/api'
 import ToastMessage from './ToastMessage.vue'
 
 const route = useRoute()
@@ -112,7 +112,7 @@ const isInitForm = ref(true)
 
 const fetchContactById = async (id) => {
   try {
-    const response = await axios.get(`http://localhost:8000/api/contacts/${id}`)
+    const response = await api.get(`/contacts/${id}`)
 
     if (response.status == 200) {
       const fetchedContact = response.data.contact
@@ -186,15 +186,11 @@ const handleAddContact = async () => {
   }
 
   try {
-    const response = await axios.put(
-      `http://localhost:8000/api/contacts/${route.params.id}`,
-      dataToPost,
-      {
-        headers: {
-          'Content-Type': 'application/json',
-        },
+    const response = await api.put(`/contacts/${route.params.id}`, dataToPost, {
+      headers: {
+        'Content-Type': 'application/json',
       },
-    )
+    })
 
     if (response.status === 200) {
       toastBody.value = response.data.message
