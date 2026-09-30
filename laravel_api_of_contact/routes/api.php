@@ -14,6 +14,15 @@ Route::middleware('auth:api')->group(function () {
     Route::get('/landing-home', [HomeController::class, 'landingApiCall']);
 
 
+    /*** Contact Routes Start */
+    Route::get('/contacts', [ContactController::class,'getContacts']);
+    Route::post('/contacts', [ContactController::class,'registerContact']);
+    Route::get('/contacts/{id}', [ContactController::class,'getContactById']);
+    Route::put('/contacts/{id}', [ContactController::class,'updateContactById']);
+    Route::delete('/contacts/{id}', [ContactController::class,'deleteContactById']);
+    /*** Contact Route End */
+
+
     Route::post('/auth/logout', [AuthController::class,'logout']);
 });
 
@@ -21,13 +30,4 @@ Route::get('/landing', [HomeController::class, 'landingApiCall']);
 
 
 
-Route::get('/contacts', [ContactController::class,'getContacts']);
 
-
-Route::post('/contacts', [ContactController::class,'registerContact']);
-
-Route::get('/contacts/{id}', [ContactController::class,'getContactById']);
-
-Route::put('/contacts/{id}', [ContactController::class,'updateContactById']);
-
-Route::delete('/contacts/{id}', [ContactController::class,'deleteContactById']);

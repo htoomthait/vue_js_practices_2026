@@ -198,7 +198,7 @@ const deleteError = ref('')
 const toast = ref(null)
 const toastBody = ref('The contact was deleted successfully.')
 const pageSizes = [5, 10, 15, 20, 30]
-const perPage = ref(5)
+const perPage = ref(10)
 const currentPage = ref(1)
 const lastPage = ref(1)
 const totalItems = ref(0)
@@ -238,7 +238,9 @@ const paginationItems = computed(() => {
 const getContacts = async (page = currentPage.value) => {
   isLoading.value = true
   try {
+    const accessToken = localStorage.getItem('access_token')
     const response = await api.get('/contacts', {
+      headers: accessToken ? { Authorization: `Bearer ${accessToken}` } : {},
       params: {
         page,
         per_page: perPage.value,

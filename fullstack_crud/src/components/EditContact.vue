@@ -70,7 +70,7 @@
               <small class="text-danger">{{ contactError.designation_err }}</small>
             </div>
             <div class="form-group mt-4 d-flex justify-content-end">
-              <RouterLink to="/" class="btn btn-outline-primary border-radius-10 mr-2">
+              <RouterLink to="/home" class="btn btn-outline-primary border-radius-10 mr-2">
                 Back to Contact List
               </RouterLink>
               <button class="btn btn-primary border-radius-10" type="submit">Update Contact</button>
