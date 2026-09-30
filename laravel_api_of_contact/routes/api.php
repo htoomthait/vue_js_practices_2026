@@ -1,17 +1,20 @@
 <?php
 
+use App\Http\Controllers\AuthController;
 use App\Http\Controllers\ContactController;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\HomeController;
 
-Route::get('/user', function (Request $request) {
-    return $request->user();
-})->middleware('auth:sanctum');
+Route::post("/auth/login", [AuthController::class, "login"]);
+
 
 
 Route::middleware('auth:api')->group(function () {
     Route::get('/landing-home', [HomeController::class, 'landingApiCall']);
+
+
+    Route::post('/auth/logout', [AuthController::class,'logout']);
 });
 
 Route::get('/landing', [HomeController::class, 'landingApiCall']);
