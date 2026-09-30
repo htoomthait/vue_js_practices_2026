@@ -73,4 +73,34 @@ class ContactPaginationTest extends TestCase
             ->assertJsonPath("contacts.data.0.name", "Phone Match")
             ->assertJsonPath("contacts.data.1.name", "Role Match");
     }
+
+    public function test_contacts_can_be_ordered_by_a_requested_column_and_direction(): void
+    {
+        foreach (["Alice", "Cecilia", "Beatrice"] as $name) {
+            Contact::create([
+                "name" => $name,
+                "email" => strtolower($name) . "@example.com",
+                "designation" => "Engineer",
+                "contact_no" => "555-0100",
+            ]);
+        }
+
+        $response = $this->getJson("/api/contacts?orderBy=name&orderDirection=desc");
+
+        $response->assertOk()
+            ->assertJsonPath("contacts.data.0.name", "Cecilia")
+            ->assertJsonPath("contacts.data.1.name", "Beatrice")
+            ->assertJsonPath("contacts.data.2.name", "Alice");
+    }
+
+    public function test_contacts_reject_unsupported_ordering_values(): void
+    {
+        $this->getJson("/api/contacts?orderBy=password")
+            ->assertUnprocessable()
+            ->assertJsonValidationErrors(["orderBy"]);
+
+        $this->getJson("/api/contacts?orderBy=name&orderDirection=random")
+            ->assertUnprocessable()
+            ->assertJsonValidationErrors(["orderDirection"]);
+    }
 }

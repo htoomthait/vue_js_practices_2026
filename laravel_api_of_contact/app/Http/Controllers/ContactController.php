@@ -20,6 +20,8 @@ class ContactController extends Controller
             "limit" => "sometimes|integer|min:1|max:100",
             "per_page" => "sometimes|integer|min:1|max:100",
             "search" => "sometimes|max:255",
+            "orderBy" => "sometimes|in:id,name,email,designation,contact_no,created_at,updated_at",
+            "orderDirection" => "sometimes|in:asc,desc",
         ]);
 
 
@@ -37,7 +39,14 @@ class ContactController extends Controller
             });
         }
 
-        $contacts = $query->orderByDesc("id")->paginate($limit, ["*"], "page", $page);
+
+        if (isset($validated["orderBy"])) {
+            $query->orderBy($validated["orderBy"], $validated["orderDirection"] ?? "asc");
+        } else {
+            $query->orderByDesc("id");
+        }
+
+        $contacts = $query->paginate($limit, ["*"], "page", $page);
 
         return response()->json([
             "code" => 200,

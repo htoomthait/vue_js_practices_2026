@@ -20,12 +20,42 @@
           <th scope="col" class="bg-primary text-white">
             <span class="d-flex justify-content-center align-items-center gap-1 height-50">
               <span class="material-icons">numbers</span>
+              <button
+                type="button"
+                class="btn btn-link text-white p-0"
+                :aria-label="`Sort by ID ${orderBy === 'id' && orderDirection === 'asc' ? 'descending' : 'ascending'}`"
+                :disabled="isLoading"
+                @click="makeOrderBy('id')"
+              >
+                <span class="material-icons">{{
+                  orderBy === 'id'
+                    ? orderDirection === 'asc'
+                      ? 'arrow_drop_up'
+                      : 'arrow_drop_down'
+                    : 'unfold_more'
+                }}</span>
+              </button>
             </span>
           </th>
           <th scope="col" class="bg-primary text-white">
             <span class="d-flex justify-content-center align-items-center gap-1 height-50">
               <span class="material-icons">person</span>
               Name
+              <button
+                type="button"
+                class="btn btn-link text-white p-0"
+                :aria-label="`Sort by name ${orderBy === 'name' && orderDirection === 'asc' ? 'descending' : 'ascending'}`"
+                :disabled="isLoading"
+                @click="makeOrderBy('name')"
+              >
+                <span class="material-icons">{{
+                  orderBy === 'name'
+                    ? orderDirection === 'asc'
+                      ? 'arrow_drop_up'
+                      : 'arrow_drop_down'
+                    : 'unfold_more'
+                }}</span>
+              </button>
             </span>
           </th>
           <th scope="col" class="bg-primary text-white">
@@ -174,6 +204,8 @@ const lastPage = ref(1)
 const totalItems = ref(0)
 const isLoading = ref(false)
 const searchTerm = ref('')
+const orderBy = ref('id')
+const orderDirection = ref('desc')
 let searchTimeout
 const fromItem = computed(() =>
   totalItems.value ? (currentPage.value - 1) * perPage.value + 1 : 0,
@@ -207,7 +239,13 @@ const getContacts = async (page = currentPage.value) => {
   isLoading.value = true
   try {
     const response = await api.get('/contacts', {
-      params: { page, per_page: perPage.value, search: searchTerm.value.trim() },
+      params: {
+        page,
+        per_page: perPage.value,
+        search: searchTerm.value.trim(),
+        orderBy: orderBy.value,
+        orderDirection: orderDirection.value,
+      },
     })
     const paginator = response.data.contacts
 
@@ -270,6 +308,17 @@ const confirmDelete = async () => {
 }
 
 /** Delete Contact with confirmation group end */
+
+const makeOrderBy = (sortBy) => {
+  if (orderBy.value === sortBy) {
+    orderDirection.value = orderDirection.value === 'asc' ? 'desc' : 'asc'
+  } else {
+    orderBy.value = sortBy
+    orderDirection.value = 'asc'
+  }
+
+  getContacts(1)
+}
 
 onMounted(() => {
   getContacts()
