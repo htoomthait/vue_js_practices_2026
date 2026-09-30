@@ -164,9 +164,11 @@ const handleAddContact = async () => {
   }
 
   try {
+    const accessToken = localStorage.getItem('access_token')
     const response = await api.post('/contacts', dataToPost, {
       headers: {
         'Content-Type': 'application/json',
+        Authorization: `Bearer ${accessToken}`,
       },
     })
 

@@ -112,7 +112,10 @@ const isInitForm = ref(true)
 
 const fetchContactById = async (id) => {
   try {
-    const response = await api.get(`/contacts/${id}`)
+    const accessToken = localStorage.getItem('access_token')
+    const response = await api.get(`/contacts/${id}`, {
+      headers: accessToken ? { Authorization: `Bearer ${accessToken}` } : {},
+    })
 
     if (response.status == 200) {
       const fetchedContact = response.data.contact
@@ -178,6 +181,7 @@ const validateForm = () => {
 }
 
 const handleAddContact = async () => {
+  const accessToken = localStorage.getItem('access_token')
   const dataToPost = { ...contact.value }
   isInitForm.value = false
 
@@ -189,6 +193,7 @@ const handleAddContact = async () => {
     const response = await api.put(`/contacts/${route.params.id}`, dataToPost, {
       headers: {
         'Content-Type': 'application/json',
+        Authorization: `Bearer ${accessToken}`,
       },
     })
 

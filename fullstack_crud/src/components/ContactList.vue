@@ -296,7 +296,10 @@ const confirmDelete = async () => {
 
   isDeleting.value = true
   try {
-    const response = await api.delete(`/contacts/${contactToDelete.value.id}`)
+    const accessToken = localStorage.getItem('access_token')
+    const response = await api.delete(`/contacts/${contactToDelete.value.id}`, {
+      headers: accessToken ? { Authorization: `Bearer ${accessToken}` } : {},
+    })
     contactToDelete.value = null
     await getContacts(currentPage.value)
 
