@@ -3,7 +3,7 @@
     <ToastMessage ref="toast" title="Contact Update" :body="toastBody" />
     <div class="row d-flex justify-content-center">
       <div class="col-md-6 card p-4">
-        <h2 class="h5">Edit contact #{{ route.params.id }}</h2>
+        <h2 class="h5">Edit contact #{{ router.params.id }}</h2>
         <form action="#" @submit.prevent="handleAddContact" novalidate>
           <fieldset>
             <div class="form-group">
@@ -88,7 +88,7 @@ import { useRoute } from 'vue-router'
 import api from '../services/api'
 import ToastMessage from './ToastMessage.vue'
 
-const route = useRoute()
+const router = useRoute()
 
 const initContact = {
   name: '',
@@ -107,7 +107,7 @@ const initContactError = {
 const contact = ref({ ...initContact })
 const contactError = ref({ ...initContactError })
 const toast = ref(null)
-const toastBody = ref('The contact was added successfully.')
+const toastBody = ref('The contact was updated successfully.')
 const isInitForm = ref(true)
 
 const fetchContactById = async (id) => {
@@ -128,7 +128,7 @@ const fetchContactById = async (id) => {
 }
 
 onMounted(() => {
-  fetchContactById(route.params.id)
+  fetchContactById(router.params.id)
 })
 
 const validateForm = () => {
@@ -190,7 +190,7 @@ const handleAddContact = async () => {
   }
 
   try {
-    const response = await api.put(`/contacts/${route.params.id}`, dataToPost, {
+    const response = await api.put(`/contacts/${router.params.id}`, dataToPost, {
       headers: {
         'Content-Type': 'application/json',
         Authorization: `Bearer ${accessToken}`,
@@ -205,6 +205,11 @@ const handleAddContact = async () => {
       isInitForm.value = true
     }
   } catch (error) {
+    if (error.response?.status === 401) {
+      localStorage.removeItem('access_token')
+      await router.push({ name: 'login_page' })
+      return
+    }
     if (error.response) {
       // Server responded with an error status
       if (error.response.status === 500) {

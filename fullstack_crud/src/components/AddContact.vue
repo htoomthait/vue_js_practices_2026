@@ -85,6 +85,7 @@
 import { ref } from 'vue'
 import api from '../services/api'
 import ToastMessage from './ToastMessage.vue'
+import { useRouter } from 'vue-router'
 
 const initContact = {
   name: '',
@@ -105,6 +106,7 @@ const contactError = ref({ ...initContactError })
 const toast = ref(null)
 const toastBody = ref('The contact was added successfully.')
 const isInitForm = ref(true)
+const router = useRouter()
 
 const validateForm = () => {
   let isFormValid = true
@@ -180,6 +182,11 @@ const handleAddContact = async () => {
       isInitForm.value = true
     }
   } catch (error) {
+    if (error.response?.status === 401) {
+      localStorage.removeItem('access_token')
+      await router.push({ name: 'login_page' })
+      return
+    }
     if (error.response) {
       // Server responded with an error status
       if (error.response.status === 500) {

@@ -187,6 +187,7 @@
 
 <script setup>
 import { computed, ref, onMounted, onUnmounted } from 'vue'
+import { useRouter } from 'vue-router'
 import api from '../services/api'
 import ToastMessage from './ToastMessage.vue'
 import ConfirmBox from './ConfirmBox.vue'
@@ -206,6 +207,8 @@ const isLoading = ref(false)
 const searchTerm = ref('')
 const orderBy = ref('id')
 const orderDirection = ref('desc')
+
+const router = useRouter()
 let searchTimeout
 const fromItem = computed(() =>
   totalItems.value ? (currentPage.value - 1) * perPage.value + 1 : 0,
@@ -256,6 +259,11 @@ const getContacts = async (page = currentPage.value) => {
     lastPage.value = paginator.last_page || 1
     totalItems.value = paginator.total ?? contacts.value.length
   } catch (error) {
+    if (error.response?.status === 401) {
+      localStorage.removeItem('access_token')
+      await router.push({ name: 'login_page' })
+      return
+    }
     console.error('Error fetching contacts:', error)
     throw new Error('Contact list cannot be fetched: ' + error.message, { cause: error })
   } finally {
@@ -306,6 +314,12 @@ const confirmDelete = async () => {
     toastBody.value = response.data.message || 'The contact was deleted successfully.'
     toast.value?.showToast()
   } catch (error) {
+    if (error.response?.status === 401) {
+      localStorage.removeItem('access_token')
+      await router.push({ name: 'login_page' })
+      return
+    }
+
     deleteError.value = error.response?.data?.message || 'Unable to delete this contact. Try again.'
   } finally {
     isDeleting.value = false
